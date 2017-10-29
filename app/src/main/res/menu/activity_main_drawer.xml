@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_pubs"
+            android:icon="@drawable/ic_pubs"
+            android:title="@string/action_pubs" />
+        <item
+            android:id="@+id/nav_create_pub"
+            android:icon="@drawable/ic_create_pub"
+            android:title="@string/create_pubs" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/action_exit" />
+
+    </group>
+
+
+
+</menu>
