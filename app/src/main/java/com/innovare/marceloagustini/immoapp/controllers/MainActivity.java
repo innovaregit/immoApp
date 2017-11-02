@@ -1,5 +1,8 @@
-package com.innovare.marceloagustini.immoapp;
+package com.innovare.marceloagustini.immoapp.controllers;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.innovare.marceloagustini.immoapp.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity
             NewPubFragment newPub = new NewPubFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.content_main, newPub).commit();
         } else if (id == R.id.nav_exit) {
-            this.exit();
+            this.dialogSalirApp("Desea salir?");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,7 +103,34 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void exit() {
-        MainActivity.this.finish();
+
+    private void dialogSalirApp(String mensaje) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Confirmar Mensaje");
+        builder.setMessage(mensaje);
+
+        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //ACCION PARA EL SI
+                Intent intent = new Intent(MainActivity.this,
+                        LoginActivity.class);
+                startActivity(intent);
+                //
+                MainActivity.this.finish();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //ACCION PARA EL NO
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
+
 }

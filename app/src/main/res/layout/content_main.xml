@@ -8,7 +8,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main"
     android:id="@+id/content_main"
-    tools:context="com.innovare.marceloagustini.immoapp.MainActivity">
+    tools:context="com.innovare.marceloagustini.immoapp.controllers.MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
