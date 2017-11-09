@@ -3,7 +3,9 @@ package com.innovare.marceloagustini.immoapp.controllers;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -132,5 +134,13 @@ public class MainActivity extends AppCompatActivity
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    //CAMARA
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
 }

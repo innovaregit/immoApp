@@ -4,13 +4,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="8dp"
-    android:background="#227787"
+    android:background="@color/colorPrimaryDark"
     >
 
-    <TextView android:id="@+id/text"
+    <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="40dp"
+        android:gravity="center_vertical"
+        android:textAlignment="center"
         android:textColor="#FFF"
-        />
+        android:textSize="40dp" />
 </LinearLayout>

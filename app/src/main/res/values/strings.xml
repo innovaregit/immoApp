@@ -13,4 +13,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string-array name="tipos_pubs">
+        <item>compra</item>
+        <item>venta</item>
+        <item>ambos</item>
+    </string-array>
+
 </resources>
