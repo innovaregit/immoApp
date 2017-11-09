@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.innovare.marceloagustini.immoapp.R;
 import com.innovare.marceloagustini.immoapp.adapters.PublicacionAdapter;
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
+import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.HardcodePubs;
 
 import java.util.ArrayList;
@@ -22,8 +23,6 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class PubsFragment extends Fragment {
-    ArrayList<Publicacion> publicaciones;
-
 
     public PubsFragment() {
 
@@ -40,9 +39,7 @@ public class PubsFragment extends Fragment {
     }
 
     private void fillLista(View v) {
-        // Construct the data source
-        this.publicaciones = HardcodePubs.fillPubs();
-        PublicacionAdapter adapter = new PublicacionAdapter(this.getActivity(), this.publicaciones);
+        PublicacionAdapter adapter = new PublicacionAdapter(this.getActivity(), Global.publicaciones);
         ListView listView = (ListView) v.findViewById(R.id.lista_publicaciones);
         listView.setAdapter(adapter);
     }

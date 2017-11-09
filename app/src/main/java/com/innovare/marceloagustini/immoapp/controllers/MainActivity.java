@@ -20,6 +20,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.innovare.marceloagustini.immoapp.R;
+import com.innovare.marceloagustini.immoapp.utilidades.Global;
+import com.innovare.marceloagustini.immoapp.utilidades.HardcodePubs;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,6 +52,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        // Construct the data source
+        if (Global.publicaciones == null) Global.publicaciones = new ArrayList<>();
+        Global.publicaciones = HardcodePubs.fillPubs();
     }
 
     @Override

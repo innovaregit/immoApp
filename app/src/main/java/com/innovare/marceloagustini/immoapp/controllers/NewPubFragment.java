@@ -15,12 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.innovare.marceloagustini.immoapp.R;
+import com.innovare.marceloagustini.immoapp.clases.Publicacion;
+import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.LocationTrack;
 
 import java.io.File;
@@ -34,6 +39,9 @@ import static android.content.ContentValues.TAG;
 public class NewPubFragment extends Fragment {
     ImageView imagen;
     ImageButton btnCamera;
+    Button btnGuardar;
+    EditText txtTitulo, txtDescripcion, txtValor, txtDireccion;
+    Spinner spinner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,11 +52,26 @@ public class NewPubFragment extends Fragment {
     }
 
     private void init(View v) {
-        Spinner spinner = (Spinner) v.findViewById(R.id.spinner_tipo);
+        spinner = (Spinner) v.findViewById(R.id.spinner_tipo);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.tipos_pubs, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        txtTitulo = (EditText) v.findViewById(R.id.txtTitulo);
+        txtDescripcion = (EditText) v.findViewById(R.id.txtDescripcion);
+        txtValor = (EditText) v.findViewById(R.id.txtValor);
+        txtDireccion = (EditText) v.findViewById(R.id.txtDireccion);
+        btnGuardar = (Button) v.findViewById(R.id.btnGuardar);
+
+        //BOTON GUARDAR CLICK
+        btnGuardar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                guardarPub();
+            }
+        });
+
+        //INIT GPS
         getLocation();
 
         //IMAGEN
@@ -60,14 +83,32 @@ public class NewPubFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
-        //LISTENER
+        //IMAGEN BUTTON CLICK
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePicture();
             }
         });
+
+
     }
+
+    private void guardarPub() {
+        Publicacion pub = new Publicacion();
+        pub.setTitulo(txtTitulo.getText().toString());
+        pub.setDescripcion(txtDescripcion.getText().toString());
+        pub.setValor(Double.parseDouble(txtValor.getText().toString()));
+        pub.setDireccion(txtDireccion.getText().toString());
+        Global.publicaciones.add(pub);
+        Toast.makeText(this.getContext(), "PUBLICACION COMPLETA", Toast.LENGTH_LONG);
+        //Redirect
+        PubsFragment pubs = new PubsFragment();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main, pubs).commit();
+    }
+
+
+    // GPS ***************
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -78,7 +119,6 @@ public class NewPubFragment extends Fragment {
             }
         }
     }
-
 
     private void getLocation() {
         if (ContextCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) ==
@@ -110,6 +150,8 @@ public class NewPubFragment extends Fragment {
 
 
     //CAMARA
+    //*****************
+
     Uri file;
 
     @Override
@@ -146,5 +188,5 @@ public class NewPubFragment extends Fragment {
                 "IMG_" + timeStamp + ".jpg");
     }
 
-
+    //***********
 }
