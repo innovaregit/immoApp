@@ -27,6 +27,7 @@ import com.innovare.marceloagustini.immoapp.R;
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.LocationTrack;
+import com.innovare.marceloagustini.immoapp.utilidades.TrackGPS;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -42,6 +43,7 @@ public class NewPubFragment extends Fragment {
     Button btnGuardar;
     EditText txtTitulo, txtDescripcion, txtValor, txtDireccion;
     Spinner spinner;
+    public static TrackGPS gps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,8 +73,8 @@ public class NewPubFragment extends Fragment {
             }
         });
 
-        //INIT GPS
-        getLocation();
+        //GPS
+        initGPS();
 
         //IMAGEN
         imagen = (ImageView) v.findViewById(R.id.imagen);
@@ -95,56 +97,35 @@ public class NewPubFragment extends Fragment {
     }
 
     private void guardarPub() {
-        Publicacion pub = new Publicacion();
-        pub.setTitulo(txtTitulo.getText().toString());
-        pub.setDescripcion(txtDescripcion.getText().toString());
-        pub.setValor(Double.parseDouble(txtValor.getText().toString()));
-        pub.setDireccion(txtDireccion.getText().toString());
-        Global.publicaciones.add(pub);
-        Toast.makeText(this.getContext(), "PUBLICACION COMPLETA", Toast.LENGTH_LONG);
-        //Redirect
-        PubsFragment pubs = new PubsFragment();
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main, pubs).commit();
+        if (!txtTitulo.getText().toString().isEmpty() && !txtValor.getText().toString().isEmpty()) {
+            Publicacion pub = new Publicacion();
+            pub.setTitulo(txtTitulo.getText().toString());
+            pub.setDescripcion(txtDescripcion.getText().toString());
+            pub.setValor(Double.parseDouble(txtValor.getText().toString()));
+            pub.setDireccion(txtDireccion.getText().toString());
+            Global.publicaciones.add(pub);
+            Toast.makeText(this.getContext(), "PUBLICACION COMPLETA", Toast.LENGTH_LONG);
+            //Redirect
+            PubsFragment pubs = new PubsFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main, pubs).commit();
+        } else {
+            Toast.makeText(getContext(), "Faltan datos", Toast.LENGTH_LONG).show();
+        }
     }
 
 
     // GPS ***************
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == 0) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                btnCamera.setEnabled(true);
-            }
-        }
-    }
+    private void initGPS() {
+        gps = new TrackGPS(this.getContext());
 
-    private void getLocation() {
-        if (ContextCompat.checkSelfPermission(this.getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED) {
-
-            LocationTrack locationTrack = new LocationTrack(getContext());
-            if (locationTrack.canGetLocation()) {
-
-                double longitude = locationTrack.getLongitude();
-                double latitude = locationTrack.getLatitude();
-
-                Toast.makeText(getContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:"
-                        + Double.toString(latitude), Toast.LENGTH_SHORT).show();
-            } else {
-
-                locationTrack.showSettingsAlert();
-            }
+        if (gps.canGetLocation()) {
+            Double longitude = gps.getLongitude();
+            Double latitude = gps.getLatitude();
+            Toast.makeText(getContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    1);
+            Toast.makeText(getContext(), "NO GPS", Toast.LENGTH_SHORT).show();
         }
-
 
     }
 
