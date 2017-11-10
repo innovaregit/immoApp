@@ -1,10 +1,11 @@
 package com.innovare.marceloagustini.immoapp.clases;
 
 import java.util.Date;
+import java.util.List;
 
 public class Publicacion {
 
-    private Long id;
+    private String id;
     private String titulo;
     private String descripcion;
     private Double valor;
@@ -17,12 +18,13 @@ public class Publicacion {
     private String city;
     private Date fecha;
     private String tipo;
+    private List<String> imagenes; // Array de Imagenes en String
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -121,4 +123,14 @@ public class Publicacion {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
+
+    public List<String> getImagenes() {
+        return imagenes;
+    }
+
+    public void setImagenes(List<String> imagenes) {
+        this.imagenes = imagenes;
+    }
+
 }

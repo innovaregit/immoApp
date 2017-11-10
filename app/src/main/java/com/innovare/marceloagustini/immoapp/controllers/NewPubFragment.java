@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.innovare.marceloagustini.immoapp.R;
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
-import com.innovare.marceloagustini.immoapp.utilidades.LocationTrack;
 import com.innovare.marceloagustini.immoapp.utilidades.TrackGPS;
 
 import java.io.File;
@@ -43,7 +42,7 @@ public class NewPubFragment extends Fragment {
     Button btnGuardar;
     EditText txtTitulo, txtDescripcion, txtValor, txtDireccion;
     Spinner spinner;
-    public static TrackGPS gps;
+    public TrackGPS gps;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,10 +72,7 @@ public class NewPubFragment extends Fragment {
             }
         });
 
-        //GPS
-        initGPS();
-
-        //IMAGEN
+        //IMAGEN y BOTONES DE FOTOS
         imagen = (ImageView) v.findViewById(R.id.imagen);
         btnCamera = (ImageButton) v.findViewById(R.id.btnCamera);
 
@@ -92,6 +88,10 @@ public class NewPubFragment extends Fragment {
                 takePicture();
             }
         });
+
+
+        //GPS
+        initGPS();
 
 
     }
@@ -113,28 +113,21 @@ public class NewPubFragment extends Fragment {
         }
     }
 
-
-    // GPS ***************
-
-    private void initGPS() {
-        gps = new TrackGPS(this.getContext());
-
-        if (gps.canGetLocation()) {
-            Double longitude = gps.getLongitude();
-            Double latitude = gps.getLatitude();
-            Toast.makeText(getContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), "NO GPS", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-
     //CAMARA
     //*****************
 
     Uri file;
 
+    // 2-Tomar Foto
+    public void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        file = Uri.fromFile(getOutputMediaFile());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
+
+        startActivityForResult(intent, 100);
+    }
+
+    // 3- Resultado de la foto
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -145,15 +138,7 @@ public class NewPubFragment extends Fragment {
         }
     }
 
-
-    public void takePicture() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        file = Uri.fromFile(getOutputMediaFile());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
-
-        startActivityForResult(intent, 100);
-    }
-
+    // 1 - Almacenamiento temporal
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "CameraDemo");
@@ -170,4 +155,21 @@ public class NewPubFragment extends Fragment {
     }
 
     //***********
+
+
+    // GPS ***************
+
+    private void initGPS() {
+        gps = new TrackGPS(this.getContext());
+
+        if (gps.canGetLocation()) {
+            Double longitude = gps.getLongitude();
+            Double latitude = gps.getLatitude();
+            Toast.makeText(getContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "NO GPS", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 }
