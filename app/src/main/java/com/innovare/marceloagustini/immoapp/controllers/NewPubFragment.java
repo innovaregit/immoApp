@@ -42,7 +42,8 @@ public class NewPubFragment extends Fragment {
     Button btnGuardar;
     EditText txtTitulo, txtDescripcion, txtValor, txtDireccion;
     Spinner spinner;
-    public TrackGPS gps;
+    TrackGPS gps;
+    Publicacion pub;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +64,9 @@ public class NewPubFragment extends Fragment {
         txtValor = (EditText) v.findViewById(R.id.txtValor);
         txtDireccion = (EditText) v.findViewById(R.id.txtDireccion);
         btnGuardar = (Button) v.findViewById(R.id.btnGuardar);
+
+        //INIT OBJECT PUBLICACION
+        pub = new Publicacion();
 
         //BOTON GUARDAR CLICK
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +93,6 @@ public class NewPubFragment extends Fragment {
             }
         });
 
-
         //GPS
         initGPS();
 
@@ -98,7 +101,6 @@ public class NewPubFragment extends Fragment {
 
     private void guardarPub() {
         if (!txtTitulo.getText().toString().isEmpty() && !txtValor.getText().toString().isEmpty()) {
-            Publicacion pub = new Publicacion();
             pub.setTitulo(txtTitulo.getText().toString());
             pub.setDescripcion(txtDescripcion.getText().toString());
             pub.setValor(Double.parseDouble(txtValor.getText().toString()));
@@ -134,6 +136,7 @@ public class NewPubFragment extends Fragment {
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
                 imagen.setImageURI(file);
+                pub.getImagenes().add("path_upload");
             }
         }
     }
