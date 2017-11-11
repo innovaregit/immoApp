@@ -54,11 +54,13 @@ public class NewPubFragment extends Fragment {
     }
 
     private void init(View v) {
+        //Spinner
         spinner = (Spinner) v.findViewById(R.id.spinner_tipo);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.tipos_pubs, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        //
         txtTitulo = (EditText) v.findViewById(R.id.txtTitulo);
         txtDescripcion = (EditText) v.findViewById(R.id.txtDescripcion);
         txtValor = (EditText) v.findViewById(R.id.txtValor);
@@ -120,27 +122,6 @@ public class NewPubFragment extends Fragment {
 
     Uri file;
 
-    // 2-Tomar Foto
-    public void takePicture() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        file = Uri.fromFile(getOutputMediaFile());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
-
-        startActivityForResult(intent, 100);
-    }
-
-    // 3- Resultado de la foto
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            if (resultCode == RESULT_OK) {
-                imagen.setImageURI(file);
-                pub.getImagenes().add("path_upload");
-            }
-        }
-    }
-
     // 1 - Almacenamiento temporal
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
@@ -156,6 +137,28 @@ public class NewPubFragment extends Fragment {
         return new File(mediaStorageDir.getPath() + File.separator +
                 "IMG_" + timeStamp + ".jpg");
     }
+
+    // 2-Tomar Foto
+    public void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        file = Uri.fromFile(getOutputMediaFile());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
+        startActivityForResult(intent, 100);
+    }
+
+    // 3- Resultado de la foto
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
+                imagen.setImageURI(file);
+                pub.getImagenes().add("path_upload");
+            }
+        }
+    }
+
+
 
     //***********
 
