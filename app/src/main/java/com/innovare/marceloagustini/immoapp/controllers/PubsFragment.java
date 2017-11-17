@@ -1,6 +1,7 @@
 package com.innovare.marceloagustini.immoapp.controllers;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.innovare.marceloagustini.immoapp.R;
 import com.innovare.marceloagustini.immoapp.adapters.PublicacionAdapter;
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
@@ -16,10 +19,20 @@ import com.innovare.marceloagustini.immoapp.redes.JsonToObject;
 import com.innovare.marceloagustini.immoapp.redes.PublicacionesAsyncTask;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.HardcodePubs;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import cz.msebera.android.httpclient.entity.mime.Header;
 
 
 /**
@@ -37,7 +50,7 @@ public class PubsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View vista = inflater.inflate(R.layout.fragment_pubs, container, false);
-        fillListaNativo(vista);
+        fillListaConLibreria(vista);
         return vista;
     }
 
@@ -47,8 +60,8 @@ public class PubsFragment extends Fragment {
         listView.setAdapter(adapter);
     }
 
+    //CON ASYNC TASK y JSON OBJECTS
     private void fillListaNativo(View v) {
-
         try {
             //Leemos al servidor
             String json =
@@ -66,6 +79,34 @@ public class PubsFragment extends Fragment {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+    }
 
+    //CON LIBRERIAS GSON Y ASYNC-HTTP
+    private void fillListaConLibreria(final View v) {
+        final Fragment fragment = this;
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(Global.restUrl + "/publicacion", new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                Gson gson = new Gson();
+                try {
+                    ArrayList<Publicacion> lista = gson.fromJson(response.getJSONArray("data").toString(),
+                            new TypeToken<ArrayList<Publicacion>>() {
+                            }.getType());
+                    //Adaptador
+                    PublicacionAdapter adapter = new PublicacionAdapter(fragment.getActivity(), lista);
+                    ListView listView = (ListView) v.findViewById(R.id.lista_publicaciones);
+                    listView.setAdapter(adapter);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int x, cz.msebera.android.httpclient.Header[] header, Throwable t, JSONObject object) {
+                //ERRORES AQUI
+            }
+        });
     }
 }

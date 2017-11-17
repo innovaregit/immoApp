@@ -27,6 +27,7 @@ public class JsonToObject {
                 pub.setTitulo(jsonPub.getString("titulo"));
                 pub.setDescripcion(jsonPub.getString("descripcion"));
                 pub.setValor(jsonPub.getDouble("valor"));
+                //... POR CADA ATRIBUTO U OBJETO HACER LO MISMO.
                 lista.add(pub);
             }
             return lista;
