@@ -1,6 +1,5 @@
 package com.innovare.marceloagustini.immoapp.clases;
 
-import java.util.Date;
 import java.util.List;
 
 public class Publicacion {

@@ -85,7 +85,7 @@ public class PubsFragment extends Fragment {
     private void fillListaRemotaConLibrerias(final View v) {
         final Fragment fragment = this;
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(Global.restUrl + "/publicacion/598dc685fbca93613846a598", new JsonHttpResponseHandler() {
+        client.get(Global.restUrl + "/publicacion/"+Global.usuario.get_id(), new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                 Gson gson = new Gson();
