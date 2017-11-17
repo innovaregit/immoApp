@@ -1,6 +1,7 @@
 package com.innovare.marceloagustini.immoapp.utilidades;
 
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
+import com.innovare.marceloagustini.immoapp.clases.Usuario;
 
 import java.util.ArrayList;
 
@@ -11,4 +12,5 @@ import java.util.ArrayList;
 public class Global {
     public static ArrayList<Publicacion> publicaciones;
     public static String restUrl = "http://i-mmo.net/";
+    public static Usuario usuario;
 }

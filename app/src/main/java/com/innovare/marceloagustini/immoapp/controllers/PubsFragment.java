@@ -50,7 +50,7 @@ public class PubsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View vista = inflater.inflate(R.layout.fragment_pubs, container, false);
-        fillListaConLibreria(vista);
+        fillListaRemotaConLibrerias(vista);
         return vista;
     }
 
@@ -61,11 +61,11 @@ public class PubsFragment extends Fragment {
     }
 
     //CON ASYNC TASK y JSON OBJECTS
-    private void fillListaNativo(View v) {
+    private void fillListaRemotaBasica(View v) {
         try {
             //Leemos al servidor
             String json =
-                    new PublicacionesAsyncTask().execute(Global.restUrl + "/publicacion").get();
+                    new PublicacionesAsyncTask().execute(Global.restUrl + "/publicacion" + Global.usuario.get_id()).get();
             Log.e("OK", json); // Miramos en consola
 
             //Convertimos a Objetos
@@ -82,13 +82,14 @@ public class PubsFragment extends Fragment {
     }
 
     //CON LIBRERIAS GSON Y ASYNC-HTTP
-    private void fillListaConLibreria(final View v) {
+    private void fillListaRemotaConLibrerias(final View v) {
         final Fragment fragment = this;
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(Global.restUrl + "/publicacion", new JsonHttpResponseHandler() {
+        client.get(Global.restUrl + "/publicacion/598dc685fbca93613846a598", new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                 Gson gson = new Gson();
+                Log.e("_ID",Global.usuario.get_id());
                 try {
                     ArrayList<Publicacion> lista = gson.fromJson(response.getJSONArray("data").toString(),
                             new TypeToken<ArrayList<Publicacion>>() {

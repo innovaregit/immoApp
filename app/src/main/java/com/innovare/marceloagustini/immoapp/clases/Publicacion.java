@@ -15,19 +15,8 @@ public class Publicacion {
     private int bedrooms;
     private String moneda;
     private String city;
-    private Date fecha;
     private String tipo;
-    private Usuario usuario;
     private List<String> imagenes; // Array de Imagenes en String
-
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 
     public String get_id() {
         return _id;
@@ -117,13 +106,6 @@ public class Publicacion {
         this.city = city;
     }
 
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
 
     public String getTipo() {
         return tipo;
