@@ -58,7 +58,7 @@ public class PubsFragment extends Fragment {
             //Convertimos a Objetos
             ArrayList<Publicacion> lista = JsonToObject.obtenerPublicaciones(json);
             //Seguimos
-            PublicacionAdapter adapter = new PublicacionAdapter(this.getActivity(),lista);
+            PublicacionAdapter adapter = new PublicacionAdapter(this.getActivity(), lista);
             ListView listView = (ListView) v.findViewById(R.id.lista_publicaciones);
             listView.setAdapter(adapter);
         } catch (InterruptedException e) {
