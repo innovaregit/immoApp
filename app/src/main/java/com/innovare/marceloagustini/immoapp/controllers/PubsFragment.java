@@ -12,11 +12,14 @@ import android.widget.ListView;
 import com.innovare.marceloagustini.immoapp.R;
 import com.innovare.marceloagustini.immoapp.adapters.PublicacionAdapter;
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
+import com.innovare.marceloagustini.immoapp.redes.JsonToObject;
+import com.innovare.marceloagustini.immoapp.redes.PublicacionesAsyncTask;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.HardcodePubs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -34,7 +37,7 @@ public class PubsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View vista = inflater.inflate(R.layout.fragment_pubs, container, false);
-        fillLista(vista);
+        fillListaNativo(vista);
         return vista;
     }
 
@@ -42,5 +45,27 @@ public class PubsFragment extends Fragment {
         PublicacionAdapter adapter = new PublicacionAdapter(this.getActivity(), Global.publicaciones);
         ListView listView = (ListView) v.findViewById(R.id.lista_publicaciones);
         listView.setAdapter(adapter);
+    }
+
+    private void fillListaNativo(View v) {
+
+        try {
+            //Leemos al servidor
+            String json =
+                    new PublicacionesAsyncTask().execute(Global.restUrl + "/publicacion").get();
+            Log.e("OK", json); // Miramos en consola
+
+            //Convertimos a Objetos
+            ArrayList<Publicacion> lista = JsonToObject.obtenerPublicaciones(json);
+            //Seguimos
+            PublicacionAdapter adapter = new PublicacionAdapter(this.getActivity(),lista);
+            ListView listView = (ListView) v.findViewById(R.id.lista_publicaciones);
+            listView.setAdapter(adapter);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
     }
 }

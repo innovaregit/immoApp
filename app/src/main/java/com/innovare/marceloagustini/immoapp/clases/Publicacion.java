@@ -4,8 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Publicacion {
-
-    private String id;
+    private String _id;
     private String titulo;
     private String descripcion;
     private Double valor;
@@ -18,14 +17,24 @@ public class Publicacion {
     private String city;
     private Date fecha;
     private String tipo;
+    private Usuario usuario;
     private List<String> imagenes; // Array de Imagenes en String
 
-    public String getId() {
-        return id;
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getTitulo() {
@@ -124,7 +133,6 @@ public class Publicacion {
         this.tipo = tipo;
     }
 
-
     public List<String> getImagenes() {
         return imagenes;
     }
@@ -132,5 +140,6 @@ public class Publicacion {
     public void setImagenes(List<String> imagenes) {
         this.imagenes = imagenes;
     }
+
 
 }

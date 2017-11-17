@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,10 +22,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.innovare.marceloagustini.immoapp.R;
+import com.innovare.marceloagustini.immoapp.redes.PublicacionesAsyncTask;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.HardcodePubs;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity
         // Construct the data source
         if (Global.publicaciones == null) Global.publicaciones = new ArrayList<>();
         Global.publicaciones = HardcodePubs.fillPubs();
+
     }
 
     @Override
