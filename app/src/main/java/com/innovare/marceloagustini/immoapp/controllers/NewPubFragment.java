@@ -241,6 +241,7 @@ public class NewPubFragment extends Fragment {
         });
     }
 
+    //ENVIA IMAGEN ASINCRONA.
     private void subirImagen(String id_pub) {
         RequestParams params = new RequestParams();
         try {
