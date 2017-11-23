@@ -16,6 +16,7 @@ public class Publicacion {
     private String city;
     private String tipo;
     private List<String> imagenes; // Array de Imagenes en String
+    private String usuario; //Agregamos ID del usuario
 
     public String get_id() {
         return _id;
@@ -123,4 +124,11 @@ public class Publicacion {
     }
 
 
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
 }

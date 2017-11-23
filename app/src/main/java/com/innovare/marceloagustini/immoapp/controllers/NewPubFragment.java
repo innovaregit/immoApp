@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +20,35 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.innovare.marceloagustini.immoapp.R;
+import com.innovare.marceloagustini.immoapp.adapters.PublicacionAdapter;
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.TrackGPS;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.entity.mime.Header;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -43,7 +61,7 @@ public class NewPubFragment extends Fragment {
     EditText txtTitulo, txtDescripcion, txtValor, txtDireccion;
     Spinner spinner;
     TrackGPS gps;
-    Publicacion pub;
+    Publicacion pub; //VARIABLE A NIVEL CLASE QUE VA ARMANDO LA PUBLICACION HASTA SU ENVIO AL SERVIDOR DE IMMO.
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +87,7 @@ public class NewPubFragment extends Fragment {
 
         //INIT OBJECT PUBLICACION
         pub = new Publicacion();
+        pub.setUsuario(Global.usuario.get_id()); //Agregamos la referencia
 
         //BOTON GUARDAR CLICK
         btnGuardar.setOnClickListener(new View.OnClickListener() {
@@ -107,11 +126,9 @@ public class NewPubFragment extends Fragment {
             pub.setDescripcion(txtDescripcion.getText().toString());
             pub.setValor(Double.parseDouble(txtValor.getText().toString()));
             pub.setDireccion(txtDireccion.getText().toString());
-            Global.publicaciones.add(pub);
-            Toast.makeText(this.getContext(), "PUBLICACION COMPLETA", Toast.LENGTH_LONG);
-            //Redirect
-            PubsFragment pubs = new PubsFragment();
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main, pubs).commit();
+            pub.setTipo(spinner.getSelectedItem().toString());
+
+            enviarPublicacion();
         } else {
             Toast.makeText(getContext(), "Faltan datos", Toast.LENGTH_LONG).show();
         }
@@ -153,11 +170,17 @@ public class NewPubFragment extends Fragment {
         if (requestCode == 100) {
             if (resultCode == RESULT_OK) {
                 imagen.setImageURI(file);
-                pub.getImagenes().add("path_upload");
+
+                //Obtenemos nombre archivo
+                String nombre = file.getPath().substring(file.getPath().lastIndexOf('/') + 1);
+
+                Log.e(nombre, "FILE");
+                //Agregamos al Array. Siempre una sola imagen en este caso.
+                pub.setImagenes(new ArrayList<String>());
+                pub.getImagenes().add(nombre);
             }
         }
     }
-
 
 
     //***********
@@ -171,11 +194,75 @@ public class NewPubFragment extends Fragment {
         if (gps.canGetLocation()) {
             Double longitude = gps.getLongitude();
             Double latitude = gps.getLatitude();
+            //
+            this.pub.setLat(latitude);
+            this.pub.setLng(longitude);
+            //
             Toast.makeText(getContext(), "Longitude:" + Double.toString(longitude) + "\nLatitude:" + Double.toString(latitude), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "NO GPS", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    //
+    private void enviarPublicacion() {
+        final Fragment fragment = this;
+        Gson gson = new Gson();
+        StringEntity entity = new StringEntity(gson.toJson(this.pub), "UTF-8");
+        //---
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(this.getContext(), Global.restUrl + "/publicacion", entity, "application/json", new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                Log.e("OK", "OK");
+                //SUBIMOS IMAGEN?
+                if (pub.getImagenes() != null && pub.getImagenes().size() > 0 && file != null) {
+                    try {
+                        Log.e("_ID_PUB", response.getString("id"));
+                        subirImagen(response.getString("id"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Toast.makeText(fragment.getContext(), "PUBLICACION COMPLETA", Toast.LENGTH_LONG);
+                //Redirect
+                PubsFragment pubs = new PubsFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_main, pubs).commit();
+
+            }
+
+            @Override
+            public void onFailure(int x, cz.msebera.android.httpclient.Header[] header, Throwable t, JSONObject object) {
+                //ERRORES AQUI
+            }
+        });
+    }
+
+    private void subirImagen(String id_pub) {
+        RequestParams params = new RequestParams();
+        try {
+            File upload = new File(file.getPath());
+            params.put("path", id_pub + "/" + upload.getName(), upload);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(Global.restUrl + "upload/", params, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                // ok
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                // error
+            }
+
+        });
     }
 
 }
