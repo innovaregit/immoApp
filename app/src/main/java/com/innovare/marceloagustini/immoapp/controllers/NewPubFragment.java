@@ -106,6 +106,19 @@ public class NewPubFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            btnCamera.setEnabled(false);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        }
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            btnCamera.setEnabled(false);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+        }
+
         //IMAGEN BUTTON CLICK
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,11 +225,13 @@ public class NewPubFragment extends Fragment {
         StringEntity entity = new StringEntity(gson.toJson(this.pub), "UTF-8");
         //---
         AsyncHttpClient client = new AsyncHttpClient();
-        client.post(this.getContext(), Global.restUrl + "/publicacion", entity, "application/json", new JsonHttpResponseHandler() {
+        client.post(this.getContext(), Global.restUrl + "/publicacion", entity,
+                "application/json", new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                 Log.e("OK", "OK");
+
                 //SUBIMOS IMAGEN?
                 if (pub.getImagenes() != null && pub.getImagenes().size() > 0 && file != null) {
                     try {

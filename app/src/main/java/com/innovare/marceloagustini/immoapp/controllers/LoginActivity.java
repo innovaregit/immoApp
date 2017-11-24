@@ -22,6 +22,7 @@ import com.innovare.marceloagustini.immoapp.adapters.PublicacionAdapter;
 import com.innovare.marceloagustini.immoapp.clases.Publicacion;
 import com.innovare.marceloagustini.immoapp.clases.Usuario;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
+import com.innovare.marceloagustini.immoapp.utilidades.Persistencia;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -40,21 +41,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        username.setText("MARCELO AGUSTINI");
-        password.setText("xxxxx");
+        username.setText("");
+        password.setText("");
+
+        if (!Persistencia.getUsername(this).isEmpty() && !Persistencia.getPassword(this).isEmpty()) {
+            loginRemoto(Persistencia.getUsername(this), Persistencia.getPassword(this));
+        }
     }
 
     //
     public void login(View view) {
-
-        /*
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        this.finish();
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, "BIENVENIDO A IMMO", duration);
-        toast.show();
-        */
         loginRemoto(username.getText().toString(), password.getText().toString());
     }
 
@@ -80,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
     http://i-mmo.net/usuario/login/MARCELO%20AGUSTINI/xxxxx
     */
 
-    private void loginRemoto(String username, String password) {
+    private void loginRemoto(final String username, final String password) {
         final Activity act = this;
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(Global.restUrl + "/usuario/login/" + username + "/" + password, new JsonHttpResponseHandler() {
@@ -94,9 +90,13 @@ public class LoginActivity extends AppCompatActivity {
                                 }.getType());
                         if (usuario != null) {
                             Global.usuario = usuario;
+                            //
+                            Persistencia.setUsername(act,username);
+                            Persistencia.setPassword(act,password);
+                            //
                             Intent intent = new Intent(act, MainActivity.class);
                             startActivity(intent);
-                            Log.e("_ID",usuario.get_id());
+                            Log.e("_ID", usuario.get_id());
                             act.finish();
                             createCustomToast("BIENVENIDO A IMMO");
                         }

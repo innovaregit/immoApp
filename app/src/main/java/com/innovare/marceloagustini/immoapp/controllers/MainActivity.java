@@ -1,5 +1,6 @@
 package com.innovare.marceloagustini.immoapp.controllers;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import com.innovare.marceloagustini.immoapp.R;
 import com.innovare.marceloagustini.immoapp.redes.PublicacionesAsyncTask;
 import com.innovare.marceloagustini.immoapp.utilidades.Global;
 import com.innovare.marceloagustini.immoapp.utilidades.HardcodePubs;
+import com.innovare.marceloagustini.immoapp.utilidades.Persistencia;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -125,10 +127,15 @@ public class MainActivity extends AppCompatActivity
 
         builder.setTitle("Confirmar Mensaje");
         builder.setMessage(mensaje);
+        final Activity act = this;
 
         builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 //ACCION PARA EL SI
+                //
+                Persistencia.setUsername(act, "");
+                Persistencia.setPassword(act, "");
+                //
                 Intent intent = new Intent(MainActivity.this,
                         LoginActivity.class);
                 startActivity(intent);
