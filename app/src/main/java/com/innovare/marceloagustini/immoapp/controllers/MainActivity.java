@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.innovare.marceloagustini.immoapp.R;
@@ -40,6 +41,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Bundle b = getIntent().getExtras();
+
+        if(b != null)
+            Log.e("RECIBIMOS",b.getInt("parametro") + "");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +69,12 @@ public class MainActivity extends AppCompatActivity
         // Construct the data source
         if (Global.publicaciones == null) Global.publicaciones = new ArrayList<>();
         Global.publicaciones = HardcodePubs.fillPubs();
+
+
+       // View navHeaderView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        View headerView = navigationView.getHeaderView(0);
+        TextView txtUsuario = (TextView) headerView.findViewById(R.id.usuario);
+        txtUsuario.setText(Global.usuario.getUsername());
 
     }
 
@@ -103,7 +115,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
 
         if (id == R.id.nav_pubs) {
             //LOAD FRAGMENTS

@@ -94,8 +94,13 @@ public class LoginActivity extends AppCompatActivity {
                             Persistencia.setUsername(act,username);
                             Persistencia.setPassword(act,password);
                             //
+                            Bundle b = new Bundle(); //PARAMETRO
+                            b.putInt("parametro", 50); //PARAMETRO
+
                             Intent intent = new Intent(act, MainActivity.class);
+                            intent.putExtras(b); //PARAMETRO
                             startActivity(intent);
+                            //
                             Log.e("_ID", usuario.get_id());
                             act.finish();
                             createCustomToast("BIENVENIDO A IMMO");
